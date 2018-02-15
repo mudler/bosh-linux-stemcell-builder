@@ -27,6 +27,9 @@
         <source path="http://download.opensuse.org/distribution/leap/42.3/repo/oss/"/>
     </repository>
     <repository type="rpm-md" imageinclude="true">
+      <source path="http://download.opensuse.org/update/leap/42.3/oss/"/>
+    </repository>
+    <repository type="rpm-md" imageinclude="true">
       <source path="http://download.opensuse.org/repositories/Cloud:/Platform:/SUSE-Stemcell/openSUSE_Leap_42.3/"/>
     </repository>
     <packages type="image">
