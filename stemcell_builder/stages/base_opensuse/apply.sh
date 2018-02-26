@@ -46,6 +46,9 @@ rm /etc/hosts.equiv
 
 # Explicitly enable zypper's gpgcheck
 echo 'gpgcheck = on' >> /etc/zypp/zypp.conf
+
+# Ensure compatibility to the ubuntu stack, where arp resides in /usr/sbin
+ln -s /sbin/arp /usr/sbin/arp
 "
 
 touch ${chroot}/etc/gshadow
