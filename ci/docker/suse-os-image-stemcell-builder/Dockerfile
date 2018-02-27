@@ -28,7 +28,12 @@ RUN curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/dow
     && rm /usr/local/bin/gosu.asc \
     && chmod +x /usr/local/bin/gosu
 
-COPY scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+RUN useradd --shell /bin/bash -u 1000 -o -c "" -m user \
+    && echo 'user ALL=NOPASSWD:ALL' >> /etc/sudoers \
+    && usermod -G users,rvm user \
+    && mkdir /mnt/stemcells \
+    && chown user /mnt/stemcells
+
+USER user:users
 
 CMD ["/bin/bash", "-l"]

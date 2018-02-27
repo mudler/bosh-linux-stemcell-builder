@@ -5,23 +5,6 @@ set -e
 base_dir=$(readlink -nf $(dirname $0)/../..)
 source $base_dir/lib/prelude_apply.bash
 
-# Older debootstrap leaves udev daemon child process when building trusty release
-# https://bugs.launchpad.net/ubuntu/+source/debootstrap/+bug/1182540
-# The issue was fixed in 1.0.52
-downloaded_file=`mktemp`
-
-# Install debootstrap
-if is_ppc64le || [ ${base_debootstrap_suite} == 'xenial' ]; then
-  wget "http://archive.ubuntu.com/ubuntu/pool/main/d/debootstrap/debootstrap_1.0.78+nmu1ubuntu1.5_all.deb" -qO $downloaded_file && \
-    echo "c605ce07a5c25603f3f104d6189a165eb905381c066a40dbb61c09adb8577900  $downloaded_file" | shasum -a 256 -c -
-else
-  wget "http://archive.ubuntu.com/ubuntu/pool/main/d/debootstrap/debootstrap_1.0.59_all.deb" -qO $downloaded_file && \
-    echo "1df1b167fed24eb2cae0bcc0ba6d5357f6a40fe0a8aaa6bfe828c7a007413f65  $downloaded_file" | shasum -a 256 -c -
-fi
-
-dpkg -i $downloaded_file
-rm $downloaded_file
-
 # If xenial, create symlink to gutsy
 if [ ${base_debootstrap_suite} == 'xenial' ]; then
   pushd /usr/share/debootstrap/scripts
