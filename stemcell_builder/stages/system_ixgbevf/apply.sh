@@ -14,6 +14,17 @@ tar -xzf $assets_dir/ixgbevf-4.3.4.tar.gz \
 
 cp $assets_dir/usr/src/ixgbevf-4.3.4/dkms.conf $chroot/usr/src/ixgbevf-4.3.4/dkms.conf
 
+if [ -f ${chroot}/etc/SuSE-release ] # openSUSE
+then
+  # openSUSE 42.3 kernels (4.4.x) include patches backported from newer versions. Some of
+  # these patches are also part of the ixgbevf sources and applied depending on the kernel
+  # version. These conditions do not work in this case because of the backports which leads
+  # to conflicts.
+  # This patch should no longer be required once the openSUSE stemcell ships a newer kernel
+  # (at least 4.8.x).
+  patch $chroot/usr/src/ixgbevf-4.3.4/src/kcompat.h $assets_dir/opensuse_kcompat.h.patch
+fi
+
 pkg_mgr install dkms
 
 kernelver=$( ls -rt $chroot/lib/modules | tail -1 )
