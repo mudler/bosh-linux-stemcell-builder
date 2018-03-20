@@ -18,6 +18,7 @@ describe 'openSUSE leap stemcell', stemcell_image: true do
     exclude_on_warden: true,
     exclude_on_azure: true,
     exclude_on_softlayer: true,
+    exclude_on_google: true,
   } do
     describe file('/var/vcap/bosh/agent.json') do
       it { should be_valid_json_file }
