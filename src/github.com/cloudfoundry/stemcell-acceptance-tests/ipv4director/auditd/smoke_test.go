@@ -12,7 +12,7 @@ var _ = Describe("Auditd", func() {
 		stdout, _, exitStatus, err := bosh.Run(
 			"--column=stdout",
 			"ssh", "mutable/0", "-r", "-c",
-			`sudo auditctl -w /etc/network -p wa -k system-locale-story-50315687`,
+			`sudo -i auditctl -w /etc/network -p wa -k system-locale-story-50315687`,
 		)
 		Expect(err).ToNot(HaveOccurred())
 		Expect(exitStatus).To(Equal(0))
@@ -23,7 +23,7 @@ var _ = Describe("Auditd", func() {
 		stdout, _, exitStatus, err := bosh.Run(
 			"--column=stdout",
 			"ssh", "immutable/0", "-r", "-c",
-			`sudo auditctl -w /etc/network -p wa -k system-locale-story-50315687`,
+			`sudo -i auditctl -w /etc/network -p wa -k system-locale-story-50315687`,
 		)
 		Expect(err).ToNot(HaveOccurred())
 		Expect(exitStatus).To(Equal(0))
