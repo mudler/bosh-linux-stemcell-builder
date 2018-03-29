@@ -19,9 +19,16 @@ import (
 var _ = Describe("Stemcell", func() {
 	Context("when logrotate wtmp/btmp logs", func() {
 		It("should rotate the wtmp/btmp logs", func() {
+			sedCommand := ""
+			switch os.Getenv("BOSH_os_name") {
+			case "opensuse-leap":
+				sedCommand = `sudo sed -i "s/0\/15/0\/1/" /etc/systemd/system/logrotate.timer && sudo systemctl reenable logrotate.timer`
+			default:
+				sedCommand = `sudo sed -i "s/0,15,30,45/\\*/" /etc/cron.d/logrotate`
+			}
+
 			stdOut, stdErr, exitStatus, err := bosh.Run("ssh", "default/0", `sudo bash -c "dd if=/dev/urandom count=10000 bs=1024 >> /var/log/wtmp" \
-		&& sudo bash -c "dd if=/dev/urandom count=10000 bs=1024 >> /var/log/btmp" \
-		&& sudo sed -i "s/0,15,30,45/\*/" /etc/cron.d/logrotate`)
+		&& sudo bash -c "dd if=/dev/urandom count=10000 bs=1024 >> /var/log/btmp" && `+sedCommand)
 			Expect(err).ToNot(HaveOccurred())
 			Expect(exitStatus).To(Equal(0), fmt.Sprintf("stdOut: %s \n stdErr: %s", stdOut, stdErr))
 
@@ -43,9 +50,16 @@ var _ = Describe("Stemcell", func() {
 
 	Context("when syslog threshold limit is reached", func() {
 		It("should rotate the logs", func() {
+			sedCommand := ""
+			switch os.Getenv("BOSH_os_name") {
+			case "opensuse-leap":
+				sedCommand = `sudo sed -i "s/0\/15/0\/1/" /etc/systemd/system/logrotate.timer && sudo systemctl reenable logrotate.timer`
+			default:
+				sedCommand = `sudo sed -i "s/0,15,30,45/\\*/" /etc/cron.d/logrotate`
+			}
+
 			_, _, exitStatus, err := bosh.Run("ssh", "default/0", `logger "old syslog content" \
-	&& sudo bash -c "dd if=/dev/urandom count=10000 bs=1024 >> /var/log/syslog" \
-	&& sudo sed -i "s/0,15,30,45/\*/" /etc/cron.d/logrotate`)
+	&& sudo bash -c "dd if=/dev/urandom count=10000 bs=1024 >> /var/log/syslog" && `+sedCommand)
 			Expect(err).ToNot(HaveOccurred())
 			Expect(exitStatus).To(Equal(0))
 
@@ -109,7 +123,7 @@ var _ = Describe("Stemcell", func() {
 			"--column=stdout",
 			"ssh", "default/0", "-r", "-c",
 			// sleep to ensure we have multiple samples so average can be verified
-			`sudo /usr/lib/sysstat/debian-sa1 && sudo /usr/lib/sysstat/debian-sa1 1 1 && sleep 2 && sudo /usr/lib/sysstat/debian-sa1 1 1`,
+			"sudo "+saCommand+" && sudo "+saCommand+" 1 1 && sleep 2 && sudo "+saCommand+" 1 1",
 		)
 		Expect(err).ToNot(HaveOccurred())
 		Expect(exitStatus).To(Equal(0))
