@@ -67,5 +67,8 @@ locale_file=/etc/locale.conf
 
 echo "LANG=\"en_US.UTF-8\"" >> ${chroot}/${locale_file}
 
+# Set sysstat logging dir to /var/log/sysstat, as expected by the bosh agent
+sed -i "s/\/var\/log\/sa/\/var\/log\/sysstat/" ${chroot}/etc/sysstat/sysstat
+
 # Apply security rules
 truncate -s0 $chroot/etc/motd # CIS-11.1

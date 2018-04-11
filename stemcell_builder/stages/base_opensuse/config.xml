@@ -108,5 +108,6 @@
         <package name="lsof"/>
         <package name="libnfs8"/>
         <package name="gettext-tools"/>
+        <package name="sysstat"/>
     </packages>
 </image>

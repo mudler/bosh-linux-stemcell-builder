@@ -94,6 +94,17 @@ var _ = Describe("Stemcell", func() {
 	})
 
 	It("#140456537: enables sysstat", func() {
+		saCommand := ""
+		sarCommand := ""
+		switch os.Getenv("BOSH_os_name") {
+		case "opensuse-leap":
+			saCommand = "/usr/lib64/sa/sa1"
+			sarCommand = "sudo sar -f /var/log/sysstat"
+		default:
+			saCommand = "/usr/lib/sysstat/debian-sa1"
+			sarCommand = "sudo sar"
+		}
+
 		_, _, exitStatus, err := bosh.Run(
 			"--column=stdout",
 			"ssh", "default/0", "-r", "-c",
@@ -106,7 +117,7 @@ var _ = Describe("Stemcell", func() {
 		stdOut, _, exitStatus, err := bosh.Run(
 			"--column=stdout",
 			"ssh", "default/0", "-r", "-c",
-			`sudo sar`,
+			sarCommand,
 		)
 		Expect(err).ToNot(HaveOccurred())
 		Expect(exitStatus).To(Equal(0))
