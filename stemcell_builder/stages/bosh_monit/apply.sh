@@ -16,6 +16,7 @@ run_in_bosh_chroot $chroot "
 cd src
 tar zxvf $monit_archive
 cd $monit_basename
+patch -p 1 < ../validate.patch
 ./configure --prefix=$bosh_dir --without-ssl
 make -j4 && make install
 "
