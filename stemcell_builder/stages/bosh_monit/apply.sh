@@ -11,6 +11,7 @@ monit_archive=$monit_basename.tar.gz
 
 mkdir -p $chroot/$bosh_dir/src
 cp -r $dir/assets/$monit_archive $chroot/$bosh_dir/src
+cp -r $dir/assets/validate.patch $chroot/$bosh_dir/src
 
 run_in_bosh_chroot $chroot "
 cd src
